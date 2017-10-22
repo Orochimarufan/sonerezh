@@ -3,6 +3,7 @@
 /// getID3() by James Heinrich <info@getid3.org>               //
 //  available at http://getid3.sourceforge.net                 //
 //            or http://www.getid3.org                         //
+//          also https://github.com/JamesHeinrich/getID3       //
 /////////////////////////////////////////////////////////////////
 // See readme.txt for more details                             //
 /////////////////////////////////////////////////////////////////
@@ -63,7 +64,7 @@ class getid3_writetags
 	// private
 	private $ThisFileInfo; // analysis of file before writing
 
-	public function getid3_writetags() {
+	public function __construct() {
 		return true;
 	}
 
@@ -178,9 +179,7 @@ class getid3_writetags
 			switch ($tagformat) {
 				case 'ape':
 					$GETID3_ERRORARRAY = &$this->errors;
-					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.apetag.php', __FILE__, false)) {
-						return false;
-					}
+					getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.apetag.php', __FILE__, true);
 					break;
 
 				case 'id3v1':
@@ -189,9 +188,7 @@ class getid3_writetags
 				case 'metaflac':
 				case 'real':
 					$GETID3_ERRORARRAY = &$this->errors;
-					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.'.$tagformat.'.php', __FILE__, false)) {
-						return false;
-					}
+					getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.'.$tagformat.'.php', __FILE__, true);
 					break;
 
 				case 'id3v2.2':
@@ -199,9 +196,7 @@ class getid3_writetags
 				case 'id3v2.4':
 				case 'id3v2':
 					$GETID3_ERRORARRAY = &$this->errors;
-					if (!getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.id3v2.php', __FILE__, false)) {
-						return false;
-					}
+					getid3_lib::IncludeDependency(GETID3_INCLUDEPATH.'write.id3v2.php', __FILE__, true);
 					break;
 
 				default:
@@ -497,6 +492,51 @@ throw new Exception('$this->overwrite_tags=false is known to be buggy in this ve
 								$tag_data_id3v2['APIC'][] = $apic_data_array;
 						} else {
 							$this->errors[] = 'ID3v2 APIC data is not properly structured';
+							return false;
+						}
+					}
+					break;
+
+				case 'POPM':
+					if (isset($valuearray['email']) &&
+						isset($valuearray['rating']) &&
+						isset($valuearray['data'])) {
+							$tag_data_id3v2['POPM'][] = $valuearray;
+					} else {
+						$this->errors[] = 'ID3v2 POPM data is not properly structured';
+						return false;
+					}
+					break;
+
+				case 'GRID':
+					if (
+						isset($valuearray['groupsymbol']) &&
+						isset($valuearray['ownerid']) &&
+						isset($valuearray['data'])
+					) {
+							$tag_data_id3v2['GRID'][] = $valuearray;
+					} else {
+						$this->errors[] = 'ID3v2 GRID data is not properly structured';
+						return false;
+					}
+					break;
+
+				case 'UFID':
+					if (isset($valuearray['ownerid']) &&
+						isset($valuearray['data'])) {
+							$tag_data_id3v2['UFID'][] = $valuearray;
+					} else {
+						$this->errors[] = 'ID3v2 UFID data is not properly structured';
+						return false;
+					}
+					break;
+
+				case 'TXXX':
+					foreach ($valuearray as $key => $txxx_data_array) {
+						if (isset($txxx_data_array['description']) && isset($txxx_data_array['data'])) {
+							$tag_data_id3v2['TXXX'][] = $txxx_data_array;
+						} else {
+							$this->errors[] = 'ID3v2 TXXX data is not properly structured';
 							return false;
 						}
 					}
