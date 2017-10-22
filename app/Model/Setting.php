@@ -14,7 +14,7 @@ class Setting extends AppModel {
         ),
         'convert_to'	=> array(
             'inList'		=> array(
-                'rule'			=> array('inList', array('mp3', 'ogg')),
+                'rule'			=> array('inList', array('mp3', 'ogg', 'opus')),
                 'message'		=> 'Wrong conversion destination!'
             ),
             'convConflicts'	=> array(
@@ -38,6 +38,9 @@ class Setting extends AppModel {
         }
         if (isset($this->data[$this->alias]['from_ogg']) && $this->data[$this->alias]['from_ogg']) {
             $this->data[$this->alias]['convert_from'] .= 'ogg,';
+        }
+        if (isset($this->data[$this->alias]['from_opus']) && $this->data[$this->alias]['from_opus']) {
+            $this->data[$this->alias]['convert_from'] .= 'opus,';
         }
         // On force la conversion des fichiers AAC et FLAC
         $this->data[$this->alias]['convert_from'] .= 'aac,flac';

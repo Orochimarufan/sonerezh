@@ -1,8 +1,10 @@
 $(function(){
     var mp3Quality = {min: 56, max: 320, steps:[128, 192, 256]};
     var oggQuality = {min: 0, max: 10, steps:[1, 2, 3, 4, 5, 6, 7, 8, 9]};
+    var opusQuality = {min: 32, max: 192, steps:[48, 64, 96, 128, 192]}
     var mp3Val = 256;
     var oggVal = 8;
+    var opusVal = 96;
     var init = true;
 
     $('#quality-slider').slider({change: function(val) {
@@ -17,10 +19,15 @@ $(function(){
             if(!init) {
                 $('#SettingQuality').val(mp3Val);
             }
-        }else {
+        }else if($checked.val() == "ogg"){
             $('#quality-slider').slider(oggQuality);
             if(!init) {
                 $('#SettingQuality').val(oggVal);
+            }
+        }else {
+            $('#quality-slider').slider(opusQuality);
+            if(!init) {
+                $('#SettingQuality').val(opusVal);
             }
         }
         init = false;
@@ -30,7 +37,7 @@ $(function(){
 
     function updateSlider() {
         var val = $('#SettingQuality').val();
-        if($('[name="data[Setting][convert_to]"]:checked').val() == "mp3") {
+        if($('[name="data[Setting][convert_to]"]:checked').val() != "ogg") {
             mp3Val = val;
             val += 'kb/s';
         }else {

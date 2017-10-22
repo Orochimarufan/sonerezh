@@ -51,7 +51,7 @@ class SongsController extends AppController {
                     // Do not follow symlinks to avoid infinite loops
                     if (!is_link($subdirectory->path)) {
 
-                        $found_in_this_directory = $subdirectory->find('^.*\.(mp3|ogg|flac|aac)$');
+                        $found_in_this_directory = $subdirectory->find('^.*\.(mp3|ogg|opus|flac|aac)$');
 
                         // The find method does not return absolute paths.
                         foreach ($found_in_this_directory as $key => $value) {
@@ -575,6 +575,10 @@ class SongsController extends AppController {
                     $path = TMP.date('YmdHis').".ogg";
                     $song['Song']['path'] = $path;
                     passthru($avconv . " -i " . escapeshellarg($song['Song']['source_path']) . " -threads 4 -c:a libvorbis -q:a " . escapeshellarg($bitrate) . " " . escapeshellarg($path) . " 2>&1");
+                } elseif ($settings['Setting']['convert_to'] == 'opus') {
+                    $path = TMP.date('YmdHis').".opus";
+                    $song['Song']['path'] = $path;
+                    passthru($avconv . " -i " . escapeshellarg($song['Song']['source_path']) . " -threads 4 -c:a libopus -b:a " . escapeshellarg($bitrate) . " -vbr on " . escapeshellarg($path) . " 2>&1");
                 }
             } elseif (empty($song['Song']['path'])) {
                 $song['Song']['path'] = $song['Song']['source_path'];

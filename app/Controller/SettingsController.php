@@ -83,7 +83,7 @@ class SettingsController extends AppController {
         $stats['audioCache'] = 0;
         $recursiveTmpDirectoryIterator = new RecursiveDirectoryIterator(TMP);
         $recursiveTmpIteratorIterator = new RecursiveIteratorIterator($recursiveTmpDirectoryIterator);
-        $regexTmpIterator = new RegexIterator($recursiveTmpIteratorIterator, '/^.+\.(mp3|ogg)$/i');
+        $regexTmpIterator = new RegexIterator($recursiveTmpIteratorIterator, '/^.+\.(mp3|ogg|opus)$/i');
 
         foreach ($regexTmpIterator as $audio_file) {
             if (!$audio_file->isLink()) {
@@ -120,7 +120,7 @@ class SettingsController extends AppController {
         $this->loadModel('Song');
 
         $dir = new Folder(TMP);
-        $songs = $dir->findRecursive('^.*\.(mp3|ogg)$');
+        $songs = $dir->findRecursive('^.*\.(mp3|ogg|opus)$');
         foreach ($songs as $song) {
             $file = new File($song);
             $file->delete();
